@@ -14,9 +14,9 @@ Feature: Register
 
   Scenario: Cadastrar novo usuário com sucesso
     Given eu recebi o código “123456” no meu email “fulano@gmail.com”
-    And eu copiei o código “123456” antes de se inspirar no tempo de “1” minuto
+    And eu copiei o código “123456”
     And eu estou na página “confirmação de código”
-    When eu colo o código “123456” no campo “código” antes de completar “1” minuto
+    When eu colo o código “123456” no campo “código”
     And eu seleciono “Confirmar”
     Then eu sou redirecionado para a página “login”
     And eu recebo uma mensagem “conta/assinatura realizada com sucesso” no meu email “fulano@gmail.com”
