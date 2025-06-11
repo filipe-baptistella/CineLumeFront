@@ -28,3 +28,4 @@ Feature: Login
     And eu seleciono “entrar”
     Then eu recebo o “código” de seis dígitos “234567” no meu email
     And eu sou redirecionado para página de “confirmação de código”.
+    And eu vejo a mensagem “verifique seu email para continuar”
