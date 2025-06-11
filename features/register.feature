@@ -20,7 +20,7 @@ Feature: Register
     And eu seleciono “Confirmar”
     Then eu sou redirecionado para a página “login”
 
-  Scenario: Tentar registrar usuário menor de 18 anos
+  Scenario: Tentar registrar usuário menor de 18 anos de idade
     Given eu estou na página “cadastro”
     And eu não estou logado
     When eu preencho o campo “nome” com “fulano de tal”
