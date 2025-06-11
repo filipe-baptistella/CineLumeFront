@@ -8,3 +8,13 @@ Feature: Login
     And eu preencho o campo “senha” com “Ful@n02025”
     And eu seleciono “entrar”
     Then eu sou redirecionado para página “inicial”
+
+  Scenario: Login com senha ou email incorreto
+    Given eu estou cadastrado com “email” “fulano@gmail.com” e “senha” “Ful@n02025”
+    And eu estou com email verificado
+    And eu estou na página “login”
+    When eu preencho o campo “email” com “fulano@gmal.com”
+    And eu preencho o campo “senha” com “Ful@n02025”
+    And eu seleciono “entrar”
+    Then eu vejo uma mensagem de erro “senha ou email incorreto” acima do campo “email”
+    And eu continuo na página “login”
