@@ -29,3 +29,11 @@ Feature: Login
     Then eu recebo o “código” de seis dígitos “234567” no meu email
     And eu sou redirecionado para página de “confirmação de código”.
     And eu vejo a mensagem “verifique seu email para continuar”
+
+  Scenario: Login com usuario não cadastrado
+    Given eu não estou cadastrado com email “fulano@gmail.com” e senha “Ful@n02025”
+    And eu estou na página “login”
+    When eu preencho o campo email com “fulano@gmail.com”
+    And eu preencho o campo senha com “Ful@n02025”
+    And eu seleciono “entrar”
+    Then eu vejo uma mensagem de erro “usuário não cadastrado”
