@@ -1,0 +1,202 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import Link from "next/link"
+import Image from "next/image"
+import { useResetPassword } from "@/hooks/use-reset-password"
+import { useSearchParams } from "next/navigation"
+
+const backgroundImages = [
+  "https://image.tmdb.org/t/p/original/42bJFgdRqZGI9WBjWPkdPnEaY75.jpg",
+  "https://image.tmdb.org/t/p/original/jzVbEzm5KEFWYWkWj2OU2gVUhpk.jpg",
+  "https://image.tmdb.org/t/p/original/5eN3QTjaBbBGoHHa0sSfuItvhm8.jpg"
+]
+
+export default function ResetPasswordPage() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const searchParams = useSearchParams()
+  const token = searchParams.get('token')
+  
+  const {
+    password,
+    confirmPassword,
+    loading,
+    error,
+    success,
+    setPassword,
+    setConfirmPassword,
+    handleSubmit
+  } = useResetPassword(token)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length)
+    }, 4000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // If no token is provided, show error
+  if (!token) {
+    return (
+      <div className="min-h-screen flex">
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+          {backgroundImages.map((image, index) => (
+            <Image
+              key={image}
+              src={image || "/placeholder.svg"}
+              alt={`Background ${index + 1}`}
+              fill
+              className={`object-cover transition-opacity duration-1000 ${
+                index === currentImageIndex ? "opacity-100" : "opacity-0"
+              }`}
+              priority={index === 0}
+            />
+          ))}
+          <div className="absolute inset-0 bg-black/20" />
+        </div>
+
+        <div className="w-full lg:w-1/2 bg-[#0c0c0c] flex items-center justify-center p-8">
+          <div className="w-full max-w-md space-y-8">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-white tracking-wider">
+                CINE<span className="text-[#feb625]">LUME</span>
+              </h1>
+            </div>
+
+            <div className="text-center space-y-2">
+              <h2 className="text-3xl font-bold text-white">Invalid link</h2>
+              <p className="text-[#c5c5c5] text-sm mt-4">
+                This password reset link is invalid or has expired. Please request a new one.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <Link href="/forgot-password" className="text-[#feb625] hover:underline">
+                Request new reset link
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen flex">
+      {/* Left side - Movie poster */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        {backgroundImages.map((image, index) => (
+          <Image
+            key={image}
+            src={image || "/placeholder.svg"}
+            alt={`Background ${index + 1}`}
+            fill
+            className={`object-cover transition-opacity duration-1000 ${
+              index === currentImageIndex ? "opacity-100" : "opacity-0"
+            }`}
+            priority={index === 0}
+          />
+        ))}
+
+        {/* Optional: Add a subtle overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
+
+      {/* Right side - Reset password form */}
+      <div className="w-full lg:w-1/2 bg-[#0c0c0c] flex items-center justify-center p-8">
+        <div className="w-full max-w-md space-y-8">
+          {/* Logo */}
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-white tracking-wider">
+              CINE<span className="text-[#feb625]">LUME</span>
+            </h1>
+          </div>
+
+          {/* Welcome message */}
+          <div className="text-center space-y-2">
+            <h2 className="text-3xl font-bold text-white">Reset your</h2>
+            <h2 className="text-3xl font-bold text-white">password</h2>
+            <p className="text-[#c5c5c5] text-sm mt-4">
+              Enter your new password below.
+            </p>
+          </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+              <p className="text-red-500 text-sm">{error}</p>
+            </div>
+          )}
+
+          {/* Success message */}
+          {success && (
+            <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
+              <p className="text-green-500 text-sm">
+                Password reset successfully! You can now login with your new password.
+              </p>
+            </div>
+          )}
+
+          {/* Reset password form */}
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-[#c5c5c5] text-sm">
+                New password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your new password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading || success}
+                className="bg-transparent border-[#787878] border-2 rounded-lg px-4 py-3 text-white placeholder:text-[#787878] focus:border-[#feb625] focus:ring-0 h-12"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-[#c5c5c5] text-sm">
+                Confirm new password
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm your new password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={loading || success}
+                className="bg-transparent border-[#787878] border-2 rounded-lg px-4 py-3 text-white placeholder:text-[#787878] focus:border-[#feb625] focus:ring-0 h-12"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading || success}
+              className="w-full bg-[#feb625] hover:bg-[#feb625]/90 text-black font-semibold py-3 rounded-lg h-12 text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              {loading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
+              ) : (
+                'Reset password'
+              )}
+            </Button>
+          </form>
+
+          {/* Back to login link */}
+          <div className="text-center">
+            <span className="text-[#c5c5c5] text-sm">
+              Remember your password?{" "}
+              <Link href="/login" className="text-[#feb625] hover:underline">
+                Back to login
+              </Link>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+} 
